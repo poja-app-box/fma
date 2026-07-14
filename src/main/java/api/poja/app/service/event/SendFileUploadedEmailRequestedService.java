@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class SendFileUploadedEmailRequestedService implements Consumer<SendFileUploadedEmailRequested> {
+public class SendFileUploadedEmailRequestedService
+    implements Consumer<SendFileUploadedEmailRequested> {
   private final Mailer mailer;
 
   @SneakyThrows
@@ -22,6 +23,13 @@ public class SendFileUploadedEmailRequestedService implements Consumer<SendFileU
     var downloadUrl = event.getPresignedDownloadUrl();
 
     InternetAddress recipientAddress = new InternetAddress(uploaderEmail);
-    mailer.accept(new Email(recipientAddress, List.of(), List.of(), "", "Here is the file you uploaded: <a href='%s'>download</a>".formatted(downloadUrl), List.of()));
+    mailer.accept(
+        new Email(
+            recipientAddress,
+            List.of(),
+            List.of(),
+            "",
+            "Here is the file you uploaded: <a href='%s'>download</a>".formatted(downloadUrl),
+            List.of()));
   }
 }
