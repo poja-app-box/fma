@@ -1,5 +1,6 @@
 package api.poja.app.endpoint.event.model;
 
+import java.net.URL;
 import java.time.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +15,9 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class SendEmailRequested extends PojaEvent {
-  private String to;
+public class SendFileUploadedEmailRequested extends PojaEvent {
+  private String uploaderEmail;
+  private URL presignedDownloadUrl;
 
   @Override
   public Duration maxConsumerDuration() {

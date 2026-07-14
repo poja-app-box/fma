@@ -6,8 +6,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JFileMapper {
-  public File toDomain(JFile jFile) {
+  public File toDomain(JFile entity) {
     return new File(
-        jFile.getId(), jFile.getName(), jFile.getUploaderEmail(), jFile.getUploadedAt(), null);
+        entity.getId(), entity.getName(), entity.getUploaderEmail(), entity.getUploadedAt(), null);
+  }
+
+  public JFile toEntity(File domain) {
+    return JFile.builder()
+        .id(domain.id())
+        .name(domain.name())
+        .uploadedAt(domain.uploadedAt())
+        .uploaderEmail(domain.uploaderEmail())
+        .build();
   }
 }

@@ -10,6 +10,11 @@ import lombok.Builder;
 @Builder(toBuilder = true, access = PRIVATE)
 public record File(
     String id, String name, String uploaderEmail, Instant uploadedAt, @Nullable URL url) {
+
+  public File(String id, String name, String uploaderEmail, Instant uploadedAt) {
+    this(id, name, uploaderEmail, uploadedAt, null);
+  }
+
   public File url(URL url) {
     return this.toBuilder().url(url).build();
   }

@@ -14,8 +14,13 @@ public class FileRepository {
   private final JFileRepository jRepository;
   private final JFileMapper jMapper;
 
-  public List<File> findAll(int page, int size) {
-    var pageable = PageRequest.of(page, size);
+  public List<File> findAll(int pageFromOne, int itemsPerPage) {
+    var pageable = PageRequest.of(pageFromOne - 1, itemsPerPage);
     return jRepository.findAll(pageable).getContent().stream().map(jMapper::toDomain).toList();
+  }
+
+  public File save(File toSave) {
+    var entity = jMapper.toEntity(toSave);
+    return jMapper.toDomain(jRepository.save(entity));
   }
 }

@@ -53,6 +53,8 @@ paths:
                 - fileToUpload
                 - uploaderEmail
               properties:
+                fileId:
+                  type: string
                 fileToUpload:
                   type: string
                   format: binary
