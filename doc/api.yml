@@ -1,0 +1,91 @@
+openapi: 3.0.2
+info:
+  title: API Documentation
+  description: This is the API documentation for our service.
+  version: 1.0.0
+servers:
+  - url: https://ljqgzfx3pa7npcgnaxwk6obeki0wpnup.lambda-url.eu-west-3.on.aws
+
+paths:
+  /ping:
+    get:
+      summary: ping the server
+      operationId: ping
+      responses:
+        '200':
+          description: pong
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 'pong'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /files:
+    get:
+      tags:
+        - File
+      summary: Get a list of uploaded files
+      operationId: getUploadedFiles
+      responses:
+        '200':
+          description: List of uploaded files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UploadedFile'
+    post:
+      tags:
+        - File
+      summary: Upload a file
+      operationId: uploadFile
+      requestBody:
+        description: File to upload and the uploader email
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - fileToUpload
+                - uploaderEmail
+              properties:
+                fileToUpload:
+                  type: string
+                  format: binary
+                uploaderEmail:
+                  type: string
+                  format: email
+      responses:
+        '201':
+          description: The uploaded file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadedFile'
+
+components:
+  schemas:
+    UploadedFile:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "12345"
+        name:
+          type: string
+          example: "example.txt"
+        uploaderEmail:
+          type: string
+          example: "Yume"
+        uploadedAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T12:00:00Z"
+        url:
+          type: string
+          format: uri
+          example: "https://example.com/files/12345"
