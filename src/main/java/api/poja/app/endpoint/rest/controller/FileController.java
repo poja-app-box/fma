@@ -24,9 +24,9 @@ public class FileController {
 
   @PostMapping(value = "/files", consumes = MULTIPART_FORM_DATA_VALUE)
   public File uploadFile(
-      @RequestPart("fileId") String fileId,
-      @RequestPart("uploaderEmail") String uploaderEmail,
-      @RequestPart("fileToUpload") MultipartFile fileToUpload) {
-    return service.uploadFile(fileId, uploaderEmail, fileToUpload);
+    @RequestPart("fileId") String fileId,
+    @RequestPart("uploaderEmail") String uploaderEmail,
+    @RequestPart("fileToUpload") MultipartFile fileToUpload) {
+    return service.uploadFile(fileId, uploaderEmail, fileToUpload)
   }
 }

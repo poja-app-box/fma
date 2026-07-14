@@ -41,9 +41,9 @@ public class FileService {
     var filename = multipartFile.getOriginalFilename();
     var fileBucketKey = getFileBucketKey(fileId, filename);
     var presignedUrl = uploadFile(multipartFile, fileBucketKey);
-    var file = new File(fileId, filename, uploaderEmail, now, presignedUrl);
+    var file = new File(fileId, filename, uploaderEmail, now);
 
-    var saved = repository.save(file);
+    var saved = repository.save(file).url(presignedUrl);
 
     eventProducer.accept(List.of(new SendFileUploadedEmailRequested(uploaderEmail, presignedUrl)));
 
