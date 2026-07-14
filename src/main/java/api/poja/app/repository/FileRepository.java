@@ -4,6 +4,7 @@ import api.poja.app.model.File;
 import api.poja.app.repository.jpa.JFileRepository;
 import api.poja.app.repository.jpa.mapper.JFileMapper;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
@@ -22,5 +23,9 @@ public class FileRepository {
   public File save(File toSave) {
     var entity = jMapper.toEntity(toSave);
     return jMapper.toDomain(jRepository.save(entity));
+  }
+
+  public Optional<File> findById(String id) {
+    return jRepository.findById(id).map(jMapper::toDomain);
   }
 }

@@ -28,16 +28,21 @@ public class FileService {
 
   public List<File> findAllWithUrls(int pageFromOne, int itemsPerPage) {
     return repository.findAll(pageFromOne, itemsPerPage).stream()
-        .map(e -> e.url(getPresignedDownloadUrlByFileId(e.id())))
+        .map(e -> e.url(getPresignedUrl(e.id(), e.name())))
         .toList();
+  }
+
+  public URL getPresignedUrl(String fileId, String filename) {
+    return bucketComponent.presign(getFileBucketKey(fileId, filename), DOWNLOAD_URL_EXP);
   }
 
   public File uploadFile(String fileId, String uploaderEmail, MultipartFile multipartFile) {
     var now = now();
-    var presignedUrl = uploadFile(multipartFile, fileId);
+    var filename = multipartFile.getOriginalFilename();
+    var fileBucketKey = getFileBucketKey(fileId, filename);
+    var presignedUrl = uploadFile(multipartFile, fileBucketKey);
+    var file = new File(fileId, filename, uploaderEmail, now, presignedUrl);
 
-    var file =
-        new File(fileId, multipartFile.getOriginalFilename(), uploaderEmail, now, presignedUrl);
     var saved = repository.save(file);
 
     eventProducer.accept(List.of(new SendFileUploadedEmailRequested(uploaderEmail, presignedUrl)));
@@ -45,17 +50,13 @@ public class FileService {
     return saved;
   }
 
-  private URL uploadFile(MultipartFile multipartFile, String fileId) {
+  private URL uploadFile(MultipartFile multipartFile, String fileBucketKey) {
     var file = multipartFileConverter.apply(multipartFile);
-    bucketComponent.upload(file, getFileBucketKey(fileId));
-    return bucketComponent.presign(getFileBucketKey(fileId), DOWNLOAD_URL_EXP);
+    bucketComponent.upload(file, fileBucketKey);
+    return bucketComponent.presign(fileBucketKey, DOWNLOAD_URL_EXP);
   }
 
-  public URL getPresignedDownloadUrlByFileId(String fileId) {
-    return bucketComponent.presign(getFileBucketKey(fileId), DOWNLOAD_URL_EXP);
-  }
-
-  private static String getFileBucketKey(String fileId) {
-    return String.format("files/%s", fileId);
+  private static String getFileBucketKey(String fileId, String filename) {
+    return String.format("files/%s-%s", fileId.substring(0, 8), filename);
   }
 }
