@@ -27,6 +27,6 @@ public class FileController {
     @RequestPart("fileId") String fileId,
     @RequestPart("uploaderEmail") String uploaderEmail,
     @RequestPart("fileToUpload") MultipartFile fileToUpload) {
-    return service.uploadFile(fileId, uploaderEmail, fileToUpload)
+    return service.uploadFile(fileId, uploaderEmail, fileToUpload);
   }
 }
